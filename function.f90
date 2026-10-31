@@ -1,15 +1,18 @@
-subroutine Output_Fields(IO, NI, NJ, X, Y,r,phi, P, H)
+subroutine Output_Fields(IO,filename, NI, NJ, X, Y,r,phi, P, H)
     implicit none
     integer, intent(in) :: IO, NI, NJ
+    CHARACTER(*), intent(in) :: filename
     real(8), dimension(1:NI,1:NJ), intent(in) :: X, Y,r,phi, P, H
-    Write(IO,*) 'VARIABLES = "X", "Y", "r", "phi", "P", "H"'
-    Write(IO,*) 'ZONE I=', NI, ', J=', NJ, ', DATAPACKING=BLOCK'
-    Write(IO,'(100E25.16)') X(1:NI,1:NJ)
-    Write(IO,'(100E25.16)') Y(1:NI,1:NJ)
-    Write(IO,'(100E25.16)') r(1:NI,1:NJ)
-    Write(IO,'(100E25.16)') phi(1:NI,1:NJ)
-    Write(IO,'(100E25.16)') P(1:NI,1:NJ)
-    Write(IO,'(100E25.16)') H(1:NI,1:NJ)
+    open(IO, FILE='fields.plt', status='replace', action='write')
+        Write(IO,*) 'VARIABLES = "X", "Y", "r", "phi", "P", "H"'
+        Write(IO,*) 'ZONE I=', NI, ', J=', NJ, ', DATAPACKING=BLOCK'
+        Write(IO,'(100E25.16)') X(1:NI,1:NJ)
+        Write(IO,'(100E25.16)') Y(1:NI,1:NJ)
+        Write(IO,'(100E25.16)') r(1:NI,1:NJ)
+        Write(IO,'(100E25.16)') phi(1:NI,1:NJ)
+        Write(IO,'(100E25.16)') P(1:NI,1:NJ)
+        Write(IO,'(100E25.16)') H(1:NI,1:NJ)
+    close(IO)
 end subroutine Output_Fields
 
 
