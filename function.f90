@@ -1,9 +1,12 @@
-subroutine Output_Fields(IO,filename, NI, NJ, X, Y,r,phi, P, H)
+subroutine Output_Fields(IO,filename, NI, NJ, X, Y,r, R_in, phi, P, H)
     implicit none
     integer, intent(in) :: IO, NI, NJ
+    real(8), intent(in) :: R_in
     CHARACTER(*), intent(in) :: filename
-    real(8), dimension(1:NI,1:NJ), intent(in) :: X, Y,r,phi, P, H
-    open(IO, FILE='fields.plt', status='replace', action='write')
+    real(8), dimension(1:NI,1:NJ), intent(in) :: X, Y,phi, P, H
+    real(8), dimension(1:NI,1:NJ), intent(inout) :: r
+    r(:,:)=r(:,:)+R_in
+    open(IO, FILE=filename, status='replace', action='write')
         Write(IO,*) 'VARIABLES = "X", "Y", "r", "phi", "P", "H"'
         Write(IO,*) 'ZONE I=', NI, ', J=', NJ, ', DATAPACKING=BLOCK'
         Write(IO,'(100E25.16)') X(1:NI,1:NJ)
@@ -47,7 +50,8 @@ subroutine readinput(IO,filename,NI,NJ,max_iter, N_sec, order_acc,R_in, eps,L,de
     write(*,*) 'order_acc = ', order_acc
 
     dr=1.0/(NI-1)
-    NI=nint((1.0-R_in)/dr)+2
+    !dr=(1.0-R_in)/(NI-1)
+    !NI=nint((1.0-R_in)/dr)+2
     pi = 4.0d0 * atan(1.0d0)
     dphi = 2.0d0 * (pi/N_sec) / (NJ-1)
     section = NINT(delta_r/dr+1)
@@ -60,7 +64,7 @@ real(8) function hf(R_in,delta_r,h1,r,phi,N_sec)
     real(8), intent(in) :: R_in,delta_r,h1,r,phi
     real(8) :: pi
     pi = 4.0d0 * atan(1.0d0)
-    if (r>R_in+delta_r+1e-7 .and. r<1.0-delta_r-1e-7) then
+    if (r>delta_r+1e-7 .and. r<1.0-delta_r-1e-7) then
         hf=h1+N_sec/2.0d0/pi*(1.0d0-h1)*phi
     else
         hf=1.0d0
@@ -68,10 +72,10 @@ real(8) function hf(R_in,delta_r,h1,r,phi,N_sec)
 end function hf
 
 
-subroutine setka(NI,NJ,dr,dphi,r,phi,X,Y)
+subroutine setka(NI,NJ,dr,dphi,r,R_in,phi,X,Y)
     implicit none
     integer,intent(in) :: NI,NJ
-    real(8), intent(in) :: dr, dphi
+    real(8), intent(in) :: dr, dphi, R_in
     real(8), dimension(1:NI,1:NJ), intent(out) :: r,phi,X,Y
     integer :: i,j
 
@@ -81,8 +85,8 @@ subroutine setka(NI,NJ,dr,dphi,r,phi,X,Y)
     do j = 1, NJ
         phi(:,j) = (j-1) * dphi
     end do
-    X(:,:) = r(:,:) * cos(phi(:,:))
-    Y(:,:) = r(:,:) * sin(phi(:,:))
+    X(:,:) = (r(:,:)+R_in) * cos(phi(:,:))
+    Y(:,:) = (r(:,:)+R_in) * sin(phi(:,:))
 end subroutine setka
 
 

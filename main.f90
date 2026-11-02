@@ -13,14 +13,14 @@ program smazka
     allocate(r(1:NI,1:NJ), phi(1:NI,1:NJ), X(1:NI,1:NJ), Y(1:NI,1:NJ))
     allocate(h(1:NI,1:NJ), p(1:NI,1:NJ))
 
-    call setka(NI,NJ,dr,dphi,r,phi,X,Y)
+    call setka(NI,NJ,dr,dphi,r,R_in,phi,X,Y)
     p = 0.0d0
 
     IO_RES=11
     call Gauss_Seidel(NI, NJ, max_iter,section, order_acc, N_sec, IO_RES,dr, dphi,r,phi,R_in, delta_r, h1, L, EPS,h,p,F)
 
     IO_OUT=12
-    call Output_Fields(IO_OUT, 'fields.plt', NI, NJ, X, Y,r,phi, P, H)
+    call Output_Fields(IO_OUT, 'fields.plt', NI, NJ, X, Y,r, R_in,phi, P, H)
 
     deallocate(r, phi, X, Y, h, p)
 end program smazka
