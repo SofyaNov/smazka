@@ -14,7 +14,7 @@ subroutine Gauss_Seidel(NI, NJ, max_iter,section, order_acc, N_sec, IO_RES,dr, d
     real(8) :: hf
     real(8), dimension(1:NI,1:NJ) :: p_old
 
-    OPEN(IO_RES,FILE='residuals.plt')
+    OPEN(IO_RES,FILE='output/residuals.plt')
     WRITE(IO_RES,*) 'VARIABLES = "Iterations", "Residuals", "FORCE"'
 
     do i=1,NI-1
@@ -61,4 +61,3 @@ subroutine Gauss_Seidel(NI, NJ, max_iter,section, order_acc, N_sec, IO_RES,dr, d
     end do
     close(IO_RES)
 end subroutine Gauss_Seidel
-

@@ -1,7 +1,7 @@
 program smazka
     implicit none
     integer :: NI, NJ, max_iter, N_sec, order_acc, section
-    integer :: IO_IN, IO_RES, IO_OUT
+    integer :: IO_IN, IO_RES, IO_OUT, IO_F
     integer :: i, j
     real(8) :: R_in, eps, L, delta_r, h1, P0, dr, dphi
     real(8) :: F
@@ -22,7 +22,13 @@ program smazka
     call analitika(NI,NJ,N_sec,L,h1,h,r,p_a)
 
     IO_OUT=12
-    call Output_Fields(IO_OUT,"fields.plt", NI, NJ, X, Y,r, R_in, phi, H,P,P_a)
+    call Output_Fields(IO_OUT,"output/fields.plt", NI, NJ, X, Y,r, R_in, phi, H,P,P_a)
+
+    call force(Ni,Nj,r,phi,p,F)
+    IO_F=13
+    open(IO_F, FILE="force.plt", status='unknown', action='write', position='append')
+        write(IO_f,*) NI,NJ,N_sec,delta_r,F
+    close(IO_F)
 
     deallocate(r, phi, X, Y, h, p)
 end program smazka
