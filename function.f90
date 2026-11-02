@@ -1,20 +1,21 @@
-subroutine Output_Fields(IO,filename, NI, NJ, X, Y,r, R_in, phi, P, H)
+subroutine Output_Fields(IO,filename, NI, NJ, X, Y,r, R_in, phi, H,P,P_a)
     implicit none
     integer, intent(in) :: IO, NI, NJ
     real(8), intent(in) :: R_in
     CHARACTER(*), intent(in) :: filename
-    real(8), dimension(1:NI,1:NJ), intent(in) :: X, Y,phi, P, H
+    real(8), dimension(1:NI,1:NJ), intent(in) :: X, Y,phi, H,P,P_a
     real(8), dimension(1:NI,1:NJ), intent(inout) :: r
     r(:,:)=r(:,:)+R_in
     open(IO, FILE=filename, status='replace', action='write')
-        Write(IO,*) 'VARIABLES = "X", "Y", "r", "phi", "P", "H"'
+        Write(IO,*) 'VARIABLES = "X", "Y", "r", "phi", "H", "P", "P_a"'
         Write(IO,*) 'ZONE I=', NI, ', J=', NJ, ', DATAPACKING=BLOCK'
         Write(IO,'(100E25.16)') X(1:NI,1:NJ)
         Write(IO,'(100E25.16)') Y(1:NI,1:NJ)
         Write(IO,'(100E25.16)') r(1:NI,1:NJ)
         Write(IO,'(100E25.16)') phi(1:NI,1:NJ)
-        Write(IO,'(100E25.16)') P(1:NI,1:NJ)
         Write(IO,'(100E25.16)') H(1:NI,1:NJ)
+        Write(IO,'(100E25.16)') P(1:NI,1:NJ)
+        Write(IO,'(100E25.16)') P_a(1:NI,1:NJ)
     close(IO)
 end subroutine Output_Fields
 
@@ -141,3 +142,15 @@ subroutine boundary_conditions(NI, NJ, h, p, section, order_acc)
     p(:,NJ) = 0.0d0
 
 end subroutine boundary_conditions
+
+
+subroutine analitika(NI,NJ,N_sec,L,h1,h,r,p_a)
+    implicit none
+    integer, intent(in) :: N_sec, NI,NJ
+    real(8), intent(in) :: L,h1
+    real(8), dimension(1:NI,1:NJ), intent(in) :: h,r
+    real(8), dimension(1:NI,1:NJ), intent(out) :: p_a
+    real(8) :: pi
+    pi = 4.0d0 * atan(1.0d0)
+    p_a=2.0d0*pi*L*r**2/N_sec*(h1-h)*(h-1)/(h1**2-1)/h**2
+end subroutine analitika
