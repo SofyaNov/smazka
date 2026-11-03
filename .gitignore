@@ -1,4 +1,3 @@
-*.plt
 q
 __pycache__/
 function/function.f90
