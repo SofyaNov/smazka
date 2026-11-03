@@ -1,0 +1,11 @@
+41	!NI
+41	!NJ
+0.1	!R_in
+1e-08	!eps
+50000	!max_iter
+10	!L
+0.3	!delta_r
+2	!h1
+4	!N_sec
+0	!P0
+1	!order_acc

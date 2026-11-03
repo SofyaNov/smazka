@@ -1,0 +1,6 @@
+*.plt
+q
+__pycache__/
+function/function.f90
+function/solver.f90
+function/__pycache__/

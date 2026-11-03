@@ -5,7 +5,7 @@ import subprocess
 import shutil
 
 def zapis(NI,NJ,R_in,eps,max_iter,L,delta_r,h1,N_sec,P0,order_acc):
-	with open('Input.txt', 'w', encoding='utf-8') as f:
+	with open(os.path.join('input','Input.txt'), 'w', encoding='utf-8') as f:
 		f.write(str(NI)+'	!NI' + '\n')
 		f.write(str(NJ)+'	!NJ'+'\n')
 		f.write(str(R_in)+'	!R_in'+'\n')
@@ -37,10 +37,10 @@ def baza(NI=41,NJ=41,R_in=0.1,eps=1e-8,max_iter=50000,L=10,delta_r=0.1,h1=2,N_se
         os.makedirs(os.path.join(outdir, str(order_acc)), exist_ok=True)
     with open('force.plt', 'w', encoding='utf-8'):
         pass
-    subprocess.run(['gfortran', 'main.f90','function.f90', 'solver.f90', '-o', './q'], check=True)
+    subprocess.run(['gfortran', 'main.f90', '-o', './q'], check=True)
     for order_acc in order_accs:
         zapysk(NI,NJ,R_in,eps,max_iter,L,delta_r,h1,N_sec,P0,order_acc)
-        shutil.copy('Input.txt', os.path.join(outdir,str(order_acc), 'Input.txt'))
+        shutil.copy(os.path.join('input','Input.txt'), os.path.join(outdir,str(order_acc), 'Input.txt'))
         for name in ('residuals.plt', 'fields.plt'):
             shutil.move(os.path.join('output',name), os.path.join(outdir,str(order_acc), name))
         shutil.move('force.plt', os.path.join(outdir,'force.plt'))
@@ -54,7 +54,7 @@ def parametr(NI=41,NJ=41,R_in=0.1,eps=1e-8,max_iter=50000,L=10,delta_r=0.1,h1=2,
     os.makedirs(os.path.join(outdir, 'N_sec'), exist_ok=True)
     with open('force.plt', 'w', encoding='utf-8') as f:
         pass
-    subprocess.run(['gfortran', 'main.f90','function.f90', 'solver.f90', '-o', './q'], check=True)
+    subprocess.run(['gfortran', 'main.f90', '-o', './q'], check=True)
     for N_s in N_secs:
         zapysk(NI,NJ,R_in,eps,max_iter,L,delta_r,h1,N_s,P0,order_acc)
     shutil.move('force.plt', os.path.join(outdir,'N_sec','force.plt'))
@@ -69,21 +69,24 @@ def parametr(NI=41,NJ=41,R_in=0.1,eps=1e-8,max_iter=50000,L=10,delta_r=0.1,h1=2,
 #---------------аналитика--------------------
 def analitika(NI=41,NJ=41,R_in=0.1,eps=1e-8,max_iter=50000,L=1,delta_r=0.1,h1=2,N_sec=100,P0=0,order_acc=2,outdir='analitic'):
     os.makedirs(outdir, exist_ok=True)
-    subprocess.run(['gfortran', 'main.f90','function.f90', 'solver.f90', '-o', './q'], check=True)
+    subprocess.run(['gfortran', 'main.f90', '-o', './q'], check=True)
     zapysk(NI,NJ,R_in,eps,max_iter,L,delta_r,h1,N_sec,P0,order_acc)
     for name in ('residuals.plt', 'fields.plt'):
         shutil.move(os.path.join('output',name), os.path.join(outdir, name))
 #-------------------------------------------------
 
 #---------------порядок точности------------------
-def poradok(NI=41,NJ=41,R_in=0.1,eps=1e-8,max_iter=50000,L=10,delta_r=0.1,h1=2,N_sec=4,P0=0,order_acc=2,
+def poradok(NI=41,NJ=41,R_in=0.1,eps=1e-8,max_iter=500000,L=10,delta_r=0.1,h1=2,N_sec=4,P0=0,order_acc=2,
     outdir='poradok', outname='porad.plt', order_accs=[1,2], ni_fixed=21,nj_fixed=21, ni_list=[11,21,41],nj_list=[11,21,41]):
     os.makedirs(os.path.join(outdir, 'res'), exist_ok=True)
     os.makedirs(os.path.join(outdir, 'plt'), exist_ok=True)
     with open('force.plt', 'w', encoding='utf-8') as f:
         pass
+    
+    with open('force.plt', 'a', encoding='utf-8') as f:
+        f.write('NI NJ N_sec delta_r F' + '\n')
 
-    subprocess.run(['gfortran', 'main.f90','function.f90', 'solver.f90', '-o', './q'], check=True)
+    subprocess.run(['gfortran', 'main.f90', '-o', './q'], check=True)
 
     for order_acc in order_accs:
         with open('force.plt', 'a', encoding='utf-8') as f:
