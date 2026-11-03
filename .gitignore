@@ -3,3 +3,4 @@ __pycache__/
 function/function.f90
 function/solver.f90
 function/__pycache__/
+*lock*
